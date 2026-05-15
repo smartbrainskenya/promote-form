@@ -1,20 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { FieldPath } from "react-hook-form";
 import { promotionSchema, type PromotionFormValues } from "@/lib/schema";
 import { submitForm } from "@/lib/submitForm";
 import FormField from "./FormField";
 import SuccessCard from "./SuccessCard";
+import SchoolCombobox from "./SchoolCombobox";
 
 const COURSES = [
   "CSS",
   "HTML 1",
   "Scratch",
-  "Scratch Beginner",
-  "Scratch Advanced",
+  "Robotics Project",
+  "Android App Development",
   "Foundations of Coding 1",
 ] as const;
 
@@ -74,6 +75,7 @@ export default function PromotionForm() {
     trigger,
     setValue,
     reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<PromotionFormValues>({
     resolver: zodResolver(promotionSchema),
@@ -192,11 +194,17 @@ export default function PromotionForm() {
                 required
                 error={errors.school?.message}
               >
-                <input
-                  {...register("school")}
-                  type="text"
-                  placeholder="e.g. Nairobi Primary School"
-                  className={errors.school ? inputErrorClass : inputClass}
+                <Controller
+                  name="school"
+                  control={control}
+                  render={({ field }) => (
+                    <SchoolCombobox
+                      value={field.value ?? ""}
+                      onChange={field.onChange}
+                      onBlur={field.onBlur}
+                      error={errors.school?.message}
+                    />
+                  )}
                 />
               </FormField>
 
